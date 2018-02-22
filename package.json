@@ -1,0 +1,13 @@
+{
+  "name": "chatApplication",
+  "version": "0.0.1",
+  "description": "this is a chat application",
+  "repository": "https://github.com/kusamkaur16/Assignment3_SENG533",
+  "dependencies": {
+    "express": "^4.15.2",
+    "socket.io": "^1.7.3"
+  },
+  "scripts": {
+    "start": "node index.js"
+  }
+}
