@@ -69,8 +69,11 @@ app.get('/', function(req, res) {
 io.on('connection', function(socket) {
 
     socket.on('chat message', function(msg) {
-        var dt = new Date();
-        var date = dt.getHours() + ":" + (dt.getMinutes()) + ":" + (dt.getSeconds());
+        let dt = new Date();
+        let hour = (dt.getHours() < 10 ? '0' : '') + dt.getHours();
+        let minutes = (dt.getMinutes() < 10 ? '0' : '') + dt.getMinutes();
+        let seconds = (dt.getSeconds() < 10 ? '0' : '') + dt.getSeconds();
+        var date = hour + ":" + minutes + ":" + seconds;
         let message = "<li><font color=" + curUsers[socket.id].color + ">" + date + " " +
             curUsers[socket.id].name + ": " + msg + "</font></li>";
         history += message;
