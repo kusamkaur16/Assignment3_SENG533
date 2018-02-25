@@ -14,7 +14,7 @@ var checkColor = function(color) {
         var split = color.split('');
         for (let i = 0; i < split.length; i++) {
             var char = split[i].toUpperCase();
-            if ((char >= '0' && char <= '9') || (char >= 'A' || char <= 'F')) {
+            if ((char >= '0' && char <= '9') || (char >= 'A' && char <= 'F')) {
                 response++;
             }
         }
