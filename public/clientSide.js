@@ -32,18 +32,32 @@ $(function() {
   });
   socket.on('chat message', function(msg) {
     if (msg.user == name) {
+        console.log(msg.color);
+      var bubble = "<div class='speech-bubbleMine'><div class = 'dialog'><p  style='color: " + msg.color + ";'>" + msg.message + "</p></div>" +
+        "<div class ='time'>" + msg.time + "</div>" + "<div class = 'user'>" + msg.user + "</div>" +"</div>";
       let message = msg.message.replace('<li>', '<li class="bold">');
-      $('#incomingMessages').append(message);
+      $('#incomingMessages').append(bubble);
     } else {
-      $('#incomingMessages').append(msg.message);
+      //add appropriate css
+      var bubble = "<div class='speech-bubble'><div class = 'dialog'><p  style='color: " + msg.color + ";'>" + msg.message + "</p></div>" +
+        "<div class ='time'>" + msg.time + "</div>" + "<div class = 'user'>" + msg.user + "</div>" +"</div>";
+      $('#incomingMessages').append(bubble);
     }
-    window.scrollTo(0, document.main.scrollHeight);
+
   });
 
   socket.on('new name', function(msg) {
     name = msg.name;
     $('#name').append(name);
-    $('#incomingMessages').append(msg.history);
+    //get the incomingMessages
+    var retrievedMessages = "";
+
+    for(var i = 0 ; i < msg.history.length ; i++){
+        retrievedMessages += "<div class='speech-bubble'><div class = 'dialog'><p  style='color: " + msg.history[i].color + ";'>" + msg.history[i].message + "</p></div>" +
+          "<div class ='time'>" + msg.history[i].time + "</div>" + "<div class = 'user'>" + msg.history[i].user + "</div>" +"</div>";
+
+    }
+    $('#incomingMessages').append(retrievedMessages);
   });
   socket.on('users', function(msg) {
     console.log('in here', msg);

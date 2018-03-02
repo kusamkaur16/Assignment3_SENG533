@@ -1,0 +1,144 @@
+html,body {
+    height: 100%;
+}
+
+.container {
+    height: 100% ;
+    width: 100%;
+}
+
+.header {
+    background-color: #05668D;
+    height: 10%;
+}
+
+.content {
+    height: 80%;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.navbar-inverse {
+  background-color: #05668D;
+}
+
+
+.navbar {
+  border-radius: 0;
+}
+
+.main {
+  background-color: #427AA1;
+  height: 100%;
+  max-height: 620px;
+}
+
+.footer {
+  background-color: #A5BE00;
+  height: 10%;
+}
+
+.sidenav {
+  background-color: #679436;
+  height: 100%;
+}
+
+.btn {
+  background-color: #427AA1;
+  border-color: #427AA1;
+  margin-top: 10%;
+}
+
+#writeHere {
+  width: 100%;
+  padding: 1% 0%;
+}
+
+#name {
+  color: #9d9d9d;
+  font-size: 20px;
+  margin-right: 10px;
+  position: absolute;
+  right: 0px;
+  top: 0px;
+}
+
+li {
+  list-style-type: none;
+}
+
+#incomingMessages {
+  overflow: auto;
+  height: 100%;
+  position: sticky;
+  top: 620px;
+}
+
+#incomingMessages li:nth-child(even) {
+  /*background: #9d9d9d;*/
+}
+
+.user {
+    font-size: 10px;
+       padding-left: 10px;
+}
+
+.dialog {
+    padding-left: 10px;
+}
+.time {
+    font-size: 11px;
+    right: 5px;
+    position: absolute;
+}
+.speech-bubble {
+    position: relative;
+    background: #EBF2FA;
+    border-radius: .4em;
+    min-height: 50px;
+    width: 90%;
+    word-wrap: break-word;
+    margin-bottom: 10px
+}
+
+.speech-bubble:after {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 20px solid transparent;
+	border-right-color: #EBF2FA;
+	border-left: 0;
+	border-top: 0;
+	margin-top: -10px;
+	margin-left: -20px;
+}
+
+.speech-bubbleMine {
+	position: relative;
+	background: #EBF2FA;
+	border-radius: .4em;
+    min-height: 50px;
+    width: 90%;
+    word-wrap: break-word;
+    margin-bottom: 10px
+}
+
+.speech-bubbleMine:after {
+	content: '';
+	position: absolute;
+	right: 0;
+	top: 50%;
+	width: 0;
+	height: 0;
+	border: 20px solid transparent;
+	border-left-color: #EBF2FA;
+	border-right: 0;
+	border-top: 0;
+    margin-top: -10.5px;
+    margin-right: -19px;
+}

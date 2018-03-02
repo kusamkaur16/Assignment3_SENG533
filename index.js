@@ -1,10 +1,12 @@
-var app = require('express')();
+var express = require('express');
+var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
+var path =  require('path');
 
 var curUsers = {};
-var history = "";
+var history = [];
 
 var checkColor = function(color) {
     //check if the string is 6 digits long
@@ -38,7 +40,7 @@ var colorGen = function() {
 var nameInUsers = function(name) {
     let num = 0;
     for (key in curUsers) {
-        if (curUsers[key].name === name) {
+        if (curUsers[key].name.toLowerCase() === name.toLowerCase()) {
             num++;
         }
     }
@@ -60,30 +62,43 @@ var nameGenerate = function(user) {
 
 }
 
+app.use(express.static(path.join(__dirname, "public")));
+
 app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/public/index.html');
 
     //assign name to user
 });
 
+
 io.on('connection', function(socket) {
 
+    //this function is used to send chat messages across multiple connections
     socket.on('chat message', function(msg) {
         let dt = new Date();
         let hour = (dt.getHours() < 10 ? '0' : '') + dt.getHours();
         let minutes = (dt.getMinutes() < 10 ? '0' : '') + dt.getMinutes();
         let seconds = (dt.getSeconds() < 10 ? '0' : '') + dt.getSeconds();
         var date = hour + ":" + minutes + ":" + seconds;
+        let color = curUsers[socket.id].color
         let message = "<li><font color=" + curUsers[socket.id].color + ">" + date + " " +
             curUsers[socket.id].name + ": " + msg + "</font></li>";
-        history += message;
+        history.push({
+            color: color,
+            time: date,
+            message: msg,
+            user: curUsers[socket.id].name
+        });
         let returnMsg = {
-            message: message,
+            color: color,
+            time: date,
+            message: msg,
             user: curUsers[socket.id].name
         };
         io.emit('chat message', returnMsg);
     });
 
+    //This function returns a new random for each new connection
     socket.on('get name', function(msg) {
         let socketName = socket.id;
         let name = nameGenerate(socketName);
@@ -96,6 +111,7 @@ io.on('connection', function(socket) {
         io.emit('users', Object.values(curUsers))
     });
 
+    //This is used to update the color for the user
     socket.on('nick color change', function(msg) {
         let socketName = socket.id;
         let colorNew = msg.replace('/nickcolor ', '');
@@ -103,9 +119,9 @@ io.on('connection', function(socket) {
         //check if the color is legit
         if (checkColor(colorNew) === 6) {
             curUsers[socketName].color = '#' + colorNew;
-            returnMesg = "Color has been successfully changed to " + colorNew;
+            returnMesg = ">>> Color has been successfully changed to " + colorNew;
         } else {
-            returnMesg = "Color was not changed because " + colorNew + " is not a real color";
+            returnMesg = ">>>> Color was not changed because " + colorNew + " is not a real color";
         }
 
         socket.emit('color change response', returnMesg);
@@ -120,12 +136,12 @@ io.on('connection', function(socket) {
         if (nameInUsers(nickNew) === 1) {
             curUsers[socketName].name = nickNew;
             returnMesg = {
-                msg: "Name has been changed to " + nickNew,
+                msg: ">>> Name has been changed to " + nickNew,
                 name: nickNew
             };
         } else {
             returnMesg = {
-                msg: "Name has not been changed. Name " + nickNew + " already exists.",
+                msg: ">>> Name has not been changed. Name " + nickNew + " already exists.",
                 name: oldNick
             };
         }
