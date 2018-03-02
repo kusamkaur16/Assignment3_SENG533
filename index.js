@@ -70,7 +70,9 @@ app.get('/', function(req, res) {
     //assign name to user
 });
 
-
+io.on('disconnect', function(socket) {
+    console.log('disconnected');
+});
 io.on('connection', function(socket) {
 
     //this function is used to send chat messages across multiple connections
@@ -119,9 +121,9 @@ io.on('connection', function(socket) {
         //check if the color is legit
         if (checkColor(colorNew) === 6) {
             curUsers[socketName].color = '#' + colorNew;
-            returnMesg = ">>> Color has been successfully changed to " + colorNew;
+            returnMesg = " >>> Color has been successfully changed to " + colorNew;
         } else {
-            returnMesg = ">>>> Color was not changed because " + colorNew + " is not a real color";
+            returnMesg = " >>>> Color was not changed because " + colorNew + " is not a real color";
         }
 
         socket.emit('color change response', returnMesg);

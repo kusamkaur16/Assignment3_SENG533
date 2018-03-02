@@ -43,7 +43,8 @@ $(function() {
         "<div class ='time'>" + msg.time + "</div>" + "<div class = 'user'>" + msg.user + "</div>" +"</div>";
       $('#incomingMessages').append(bubble);
     }
-
+    var div = $('#incomingMessages');
+    div.scrollTop( div.get(0).scrollHeight );
   });
 
   socket.on('new name', function(msg) {

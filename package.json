@@ -4,7 +4,9 @@
   "description": "this is a chat application",
   "repository": "https://github.com/kusamkaur16/Assignment3_SENG533",
   "dependencies": {
+    "cookie-parser": "^1.4.3",
     "express": "^4.15.2",
+    "express-session": "^1.15.6",
     "socket.io": "^1.7.3"
   },
   "scripts": {
