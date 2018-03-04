@@ -24,6 +24,12 @@ var updateHistory = function(oldNick, nickNew) {
             history[key].user = nickNew;
         }
     }
+
+    for(let i = 0 ; i < users.length ; i++) {
+        if (users[i] === oldNick){
+            useres[i] = nickNew;
+        }
+    }
 }
 
 var checkColor = function(color) {
@@ -99,14 +105,17 @@ app.get('/test', function(req, res) {
     if(req.session.name){
         //send back name associated with cookie
         let existingName = req.session.name;
-        console.log('exists');
         res.send(existingName);
+        //if not in users, add
+        if(users.indexOf(existingName) === -1){
+            users.push(existingName);
+        }
     } else {
 
         let randomSocket = Math.floor(Math.random() * 999);
         newName = nameGenerate(randomSocket);
+        users.push(newName);
         req.session.name = newName;
-        console.log('new');
         res.send(newName);
 
     }
@@ -114,15 +123,11 @@ app.get('/test', function(req, res) {
 
 app.get('/cookieUpdate/:name', function(req,res) {
     let na = req.params.name;
-    console.log('new name in updated cookies', na);
     req.session.name = na;
     res.send('cookie updated');
 });
 
 
-io.on('disconnect', function(socket) {
-    console.log('disconnected');
-});
 io.on('connection', function(socket) {
 
     //this function is used to send chat messages across multiple connections
@@ -163,7 +168,7 @@ io.on('connection', function(socket) {
             history: history
         }
         socket.emit('new name', returnMesg);
-        io.emit('users', Object.values(curUsers));
+        io.emit('users', users);
 
     });
     //This function returns a new random for each new connection
@@ -176,7 +181,7 @@ io.on('connection', function(socket) {
         };
 
         socket.emit('new name', returnMesg);
-        io.emit('users', Object.values(curUsers))
+        io.emit('users', users);
     });
 
     //This is used to update the color for the user
@@ -218,8 +223,18 @@ io.on('connection', function(socket) {
 
         socket.emit('name response', returnMesg);
         //update the list of users
-        io.emit('users', Object.values(curUsers))
+        io.emit('users', users);
     });
+
+   //  socket.on('disconnect', function() {
+   //    console.log('Got disconnect!');
+   //    var socketID = socket.id;
+   //    var nameOfSocket = curUsers[socketID].name;
+   //    var i = users.indexOf(nameOfSocket);
+   //    users.splice(i, 1);
+   //    io.emit('users', users);
+   // });
+
 });
 
 http.listen(port, function() {

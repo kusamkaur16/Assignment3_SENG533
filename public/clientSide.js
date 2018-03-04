@@ -7,7 +7,7 @@ $(function() {
     let append = "";
     console.log('nothing returning',arr);
     for (let i = 0; i < arr.length; i++) {
-      append += "<li>" + arr[i].name + "</li>";
+      append += "<li>" + arr[i] + "</li>";
     }
     return append;
   }
