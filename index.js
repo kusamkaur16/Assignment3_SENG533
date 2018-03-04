@@ -18,6 +18,14 @@ var history = [];
 var users = [];
 var newName;
 
+var updateHistory = function(oldNick, nickNew) {
+    for(key in history) {
+        if(history[key].user === oldNick){
+            history[key].user = nickNew;
+        }
+    }
+}
+
 var checkColor = function(color) {
     //check if the string is 6 digits long
     let response = 0;
@@ -120,7 +128,7 @@ io.on('connection', function(socket) {
     //this function is used to send chat messages across multiple connections
     socket.on('chat message', function(msg) {
         let dt = new Date();
-        let hour = (dt.getHours() < 10 ? '0' : '') + dt.getHours();
+        let hour = dt.getHours();
         let minutes = (dt.getMinutes() < 10 ? '0' : '') + dt.getMinutes();
         let seconds = (dt.getSeconds() < 10 ? '0' : '') + dt.getSeconds();
         var date = hour + ":" + minutes + ":" + seconds;
@@ -199,6 +207,8 @@ io.on('connection', function(socket) {
                 msg: ">>> Name has been changed to " + nickNew,
                 name: nickNew
             };
+            //update history
+            updateHistory(oldNick, nickNew);
         } else {
             returnMesg = {
                 msg: ">>> Name has not been changed. Name " + nickNew + " already exists.",

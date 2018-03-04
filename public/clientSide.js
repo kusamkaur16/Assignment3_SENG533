@@ -66,8 +66,13 @@ $(function() {
     var retrievedMessages = "";
 
     for(var i = 0 ; i < msg.history.length ; i++){
+        if(msg.history[i].user === name){
+            retrievedMessages += "<div class='speech-bubbleMine'><div class = 'dialog'><p  style='color: " + msg.history[i].color + ";'>" + msg.history[i].message + "</p></div>" +
+              "<div class ='time'>" + msg.history[i].time + "</div>" + "<div class = 'user'>" + msg.history[i].user + "</div>" +"</div>";
+        } else {
         retrievedMessages += "<div class='speech-bubble'><div class = 'dialog'><p  style='color: " + msg.history[i].color + ";'>" + msg.history[i].message + "</p></div>" +
           "<div class ='time'>" + msg.history[i].time + "</div>" + "<div class = 'user'>" + msg.history[i].user + "</div>" +"</div>";
+      }
 
     }
     $('#incomingMessages').append(retrievedMessages);
