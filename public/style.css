@@ -32,6 +32,7 @@ html,body {
 .main {
   background-color: #427AA1;
   height: 100%;
+  position: relative
 }
 
 .footer {
@@ -69,10 +70,12 @@ li {
 }
 
 #incomingMessages {
-  overflow: auto;
-  height: 100%;
-  position: sticky;
-  top: 620px;
+    overflow: auto;
+   height: auto;
+   position: absolute;
+   width: 98%;
+   bottom: 0px;
+   max-height: 97%;
 }
 
 #incomingMessages li:nth-child(even) {
@@ -124,7 +127,8 @@ li {
     min-height: 50px;
     width: 90%;
     word-wrap: break-word;
-    margin-bottom: 10px
+    margin-bottom: 10px;
+    font-weight: bold;
 }
 
 .speech-bubbleMine:after {
