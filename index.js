@@ -5,8 +5,18 @@ var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
 var path =  require('path');
 
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
+var session = require('express-session');
+app.use(session({
+    secret: "secret password"
+}));
+
 var curUsers = {};
 var history = [];
+var users = [];
+var newName;
 
 var checkColor = function(color) {
     //check if the string is 6 digits long
@@ -54,21 +64,53 @@ var nameGenerate = function(user) {
     let name = 'User' + Math.floor(Math.random() * 999);
     color = colorGen();
     curUsers[user] = {
-        name: name,
-        color: color
+      name: name,
+      color: color
+  }
+
+  return name;
+
+}
+
+var findKey = function(value) {
+    for(key in curUsers) {
+        if(curUsers[key].name === value){
+            return key;
+        }
     }
-
-    return name;
-
 }
 
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/public/index.html');
-
-    //assign name to user
 });
+
+app.get('/test', function(req, res) {
+    //check if there is a cookie
+    if(req.session.name){
+        //send back name associated with cookie
+        let existingName = req.session.name;
+        console.log('exists');
+        res.send(existingName);
+    } else {
+
+        let randomSocket = Math.floor(Math.random() * 999);
+        newName = nameGenerate(randomSocket);
+        req.session.name = newName;
+        console.log('new');
+        res.send(newName);
+
+    }
+});
+
+app.get('/cookieUpdate/:name', function(req,res) {
+    let na = req.params.name;
+    console.log('new name in updated cookies', na);
+    req.session.name = na;
+    res.send('cookie updated');
+});
+
 
 io.on('disconnect', function(socket) {
     console.log('disconnected');
@@ -100,6 +142,22 @@ io.on('connection', function(socket) {
         io.emit('chat message', returnMsg);
     });
 
+    socket.on('assign socket', function(msg){
+        //update socket information
+        var nameOfUser = msg;
+        let socketID = socket.id;
+        //find the key associated with the name
+        var keyOld = findKey(nameOfUser);
+        curUsers[socketID] = curUsers[keyOld];
+        delete curUsers[keyOld];
+        let returnMesg = {
+            name: nameOfUser,
+            history: history
+        }
+        socket.emit('new name', returnMesg);
+        io.emit('users', Object.values(curUsers));
+
+    });
     //This function returns a new random for each new connection
     socket.on('get name', function(msg) {
         let socketName = socket.id;

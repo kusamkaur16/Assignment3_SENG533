@@ -5,6 +5,7 @@ $(function() {
   var listUsers = function(arr) {
 
     let append = "";
+    console.log('nothing returning',arr);
     for (let i = 0; i < arr.length; i++) {
       append += "<li>" + arr[i].name + "</li>";
     }
@@ -12,7 +13,18 @@ $(function() {
   }
 
   $(document).ready(function() {
-    socket.emit('get name');
+    //socket.emit('get name');
+    var xhttp = new XMLHttpRequest();
+     xhttp.onreadystatechange = function() {
+       if (this.readyState == 4 && this.status == 200) {
+        var msg = this.responseText;
+
+        socket.emit('assign socket', msg);
+
+       }
+     };
+     xhttp.open("GET", "/test", true);
+     xhttp.send();
   });
 
   $('form').submit(function() {
@@ -72,6 +84,18 @@ $(function() {
     name = msg.name;
     $('#name').text('Welcome ' + name);
     $('#incomingMessages').append('<li>' + msg.msg + '</li>');
+    //if name change successful, update cookie
+    if(!msg.msg.includes('not')){
+        //update cookie
+        console.log('in here check');
+        let request = "/cookieUpdate/" + name;
+        var xhttp2 = new XMLHttpRequest();
+         xhttp2.onreadystatechange = function() {
+           console.log('cookie updated!');
+         };
+        xhttp2.open("GET", request, true);
+        xhttp2.send();
+    }
   });
 
 });
