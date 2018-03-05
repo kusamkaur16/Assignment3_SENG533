@@ -18,6 +18,8 @@ var history = [];
 var users = [];
 var newName;
 
+//This function is used to update the names associated with each message once
+//a name is changed
 var updateHistory = function(oldNick, nickNew) {
     for(key in history) {
         if(history[key].user === oldNick){
@@ -32,6 +34,7 @@ var updateHistory = function(oldNick, nickNew) {
     }
 }
 
+//This function checks to see if the color requested is valid
 var checkColor = function(color) {
     //check if the string is 6 digits long
     let response = 0;
@@ -50,6 +53,7 @@ var checkColor = function(color) {
     return response;
 }
 
+//This function generates a random color for each new connection
 var colorGen = function() {
     //TAKEN FROM https://stackoverflow.com/questions/1484506/random-color-generator
     //generate a random 6 letter color
@@ -61,6 +65,7 @@ var colorGen = function() {
     return color;
 }
 
+//This function checks to see if the requested username already exists or not
 var nameInUsers = function(name) {
     let num = 0;
     for (key in curUsers) {
@@ -74,6 +79,8 @@ var nameInUsers = function(name) {
         return 1;
     }
 }
+
+//This function generates a new for each new connection
 var nameGenerate = function(user) {
     let name = 'User' + Math.floor(Math.random() * 999);
     color = colorGen();
@@ -86,6 +93,7 @@ var nameGenerate = function(user) {
 
 }
 
+//This function is used to find the socket associated with each name
 var findKey = function(value) {
     for(key in curUsers) {
         if(curUsers[key].name === value){
@@ -111,7 +119,7 @@ app.get('/test', function(req, res) {
             users.push(existingName);
         }
     } else {
-
+        //create a cookie
         let randomSocket = Math.floor(Math.random() * 999);
         newName = nameGenerate(randomSocket);
         users.push(newName);
@@ -122,6 +130,7 @@ app.get('/test', function(req, res) {
 });
 
 app.get('/cookieUpdate/:name', function(req,res) {
+    //update the socket associated with the cookie
     let na = req.params.name;
     req.session.name = na;
     res.send('cookie updated');
@@ -138,14 +147,15 @@ io.on('connection', function(socket) {
         let seconds = (dt.getSeconds() < 10 ? '0' : '') + dt.getSeconds();
         var date = hour + ":" + minutes + ":" + seconds;
         let color = curUsers[socket.id].color
-        let message = "<li><font color=" + curUsers[socket.id].color + ">" + date + " " +
-            curUsers[socket.id].name + ": " + msg + "</font></li>";
+
+        //add to chat history
         history.push({
             color: color,
             time: date,
             message: msg,
             user: curUsers[socket.id].name
         });
+        //send to everyone connected
         let returnMsg = {
             color: color,
             time: date,
@@ -172,17 +182,17 @@ io.on('connection', function(socket) {
 
     });
     //This function returns a new random for each new connection
-    socket.on('get name', function(msg) {
-        let socketName = socket.id;
-        let name = nameGenerate(socketName);
-        let returnMesg = {
-            name: name,
-            history: history
-        };
-
-        socket.emit('new name', returnMesg);
-        io.emit('users', users);
-    });
+    // socket.on('get name', function(msg) {
+    //     let socketName = socket.id;
+    //     let name = nameGenerate(socketName);
+    //     let returnMesg = {
+    //         name: name,
+    //         history: history
+    //     };
+    //
+    //     socket.emit('new name', returnMesg);
+    //     io.emit('users', users);
+    // });
 
     //This is used to update the color for the user
     socket.on('nick color change', function(msg) {
@@ -200,6 +210,7 @@ io.on('connection', function(socket) {
         socket.emit('color change response', returnMesg);
     });
 
+    //This function is used to change the nick of a connection
     socket.on('nick change', function(msg) {
         let socketName = socket.id;
         let oldNick = curUsers[socketName].name;
@@ -226,6 +237,7 @@ io.on('connection', function(socket) {
         io.emit('users', users);
     });
 
+    //This function is used if a user disconnects
     socket.on('disconnect', function(data) {
       console.log('Got disconnect!');
       var socketID = socket.id;

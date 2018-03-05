@@ -2,48 +2,46 @@
 <html>
 
 <head>
-  <meta charset="utf-8">
-  <title>Chat Application</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <link rel="stylesheet" href="style.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-  <script src="clientSide.js"></script>
-
+    <meta charset="utf-8">
+    <title>Chat Application</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="clientSide.js"></script>
 </head>
 
 <body>
-    <div class = "container">
-        <div class = "row header">
+    <div class="container">
+        <div class="row header">
             <div class="col-12">
                 <h1>My Chat Application</h1>
                 <p id="name" class="navbar-brand" href="#">Welcome </p>
             </div>
         </div>
-        <div class = "row content">
+        <div class="row content">
             <div class="col-sm-9 main">
-              <ul id="incomingMessages"></ul>
+                <ul id="incomingMessages"></ul>
             </div>
             <div class="col-sm-3 sidenav hidden-xs">
-              <p style="color: white; font-size: 22px;">User's currently logged in</p>
-              <ul id="users"></ul>
+                <p style="color: white; font-size: 22px;">User's currently logged in</p>
+                <ul id="users"></ul>
             </div>
         </div>
-
-          <div class="row content footer">
-              <form action="">
-            <div class="col-sm-11">
-              <input type="text" id="writeHere" placeholder="Enter message here"></input>
-            </div>
-            <div class="col-sm-1">
-              <button class="btn btn-primary">Submit</button>
-            </div>
+        <div class="row content footer">
+            <form action="">
+                <div class="col-sm-11">
+                    <input type="text" id="writeHere" placeholder="Enter message here"></input>
+                </div>
+                <div class="col-sm-1">
+                    <button class="btn btn-primary">Submit</button>
+                </div>
             </form>
-          </div>
+        </div>
 
     </div>
-  </div>
+    </div>
 </body>
 
 </html>
