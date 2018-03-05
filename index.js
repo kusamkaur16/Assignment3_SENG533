@@ -3,7 +3,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var port = process.env.PORT || 3000;
-var path =  require('path');
+var path = require('path');
 
 var cookieParser = require('cookie-parser');
 app.use(cookieParser());
@@ -21,15 +21,15 @@ var newName;
 //This function is used to update the names associated with each message once
 //a name is changed
 var updateHistory = function(oldNick, nickNew) {
-    for(key in history) {
-        if(history[key].user === oldNick){
+    for (key in history) {
+        if (history[key].user === oldNick) {
             history[key].user = nickNew;
         }
     }
 
-    for(let i = 0 ; i < users.length ; i++) {
-        if (users[i] === oldNick){
-            useres[i] = nickNew;
+    for (let i = 0; i < users.length; i++) {
+        if (users[i] === oldNick) {
+            users[i] = nickNew;
         }
     }
 }
@@ -85,18 +85,18 @@ var nameGenerate = function(user) {
     let name = 'User' + Math.floor(Math.random() * 999);
     color = colorGen();
     curUsers[user] = {
-      name: name,
-      color: color
-  }
+        name: name,
+        color: color
+    }
 
-  return name;
+    return name;
 
 }
 
 //This function is used to find the socket associated with each name
 var findKey = function(value) {
-    for(key in curUsers) {
-        if(curUsers[key].name === value){
+    for (key in curUsers) {
+        if (curUsers[key].name === value) {
             return key;
         }
     }
@@ -110,18 +110,19 @@ app.get('/', function(req, res) {
 
 app.get('/test', function(req, res) {
     //check if there is a cookie
-    if(req.session.name){
+    if (req.session.name) {
         //send back name associated with cookie
         let existingName = req.session.name;
         res.send(existingName);
         //if not in users, add
-        if(users.indexOf(existingName) === -1){
+        if (users.indexOf(existingName) === -1) {
             users.push(existingName);
+            //add to users
         }
     } else {
         //create a cookie
         let randomSocket = Math.floor(Math.random() * 999);
-        newName = nameGenerate(randomSocket);
+        let newName = nameGenerate(randomSocket);
         users.push(newName);
         req.session.name = newName;
         res.send(newName);
@@ -129,7 +130,7 @@ app.get('/test', function(req, res) {
     }
 });
 
-app.get('/cookieUpdate/:name', function(req,res) {
+app.get('/cookieUpdate/:name', function(req, res) {
     //update the socket associated with the cookie
     let na = req.params.name;
     req.session.name = na;
@@ -165,7 +166,7 @@ io.on('connection', function(socket) {
         io.emit('chat message', returnMsg);
     });
 
-    socket.on('assign socket', function(msg){
+    socket.on('assign socket', function(msg) {
         //update socket information
         var nameOfUser = msg;
         let socketID = socket.id;
@@ -181,18 +182,6 @@ io.on('connection', function(socket) {
         io.emit('users', users);
 
     });
-    //This function returns a new random for each new connection
-    // socket.on('get name', function(msg) {
-    //     let socketName = socket.id;
-    //     let name = nameGenerate(socketName);
-    //     let returnMesg = {
-    //         name: name,
-    //         history: history
-    //     };
-    //
-    //     socket.emit('new name', returnMesg);
-    //     io.emit('users', users);
-    // });
 
     //This is used to update the color for the user
     socket.on('nick color change', function(msg) {
@@ -239,13 +228,21 @@ io.on('connection', function(socket) {
 
     //This function is used if a user disconnects
     socket.on('disconnect', function(data) {
-      console.log('Got disconnect!');
-      var socketID = socket.id;
-      var nameOfSocket = curUsers[socketID].name;
-      var i = users.indexOf(nameOfSocket);
-      users.splice(i, 1);
-      io.emit('users', users);
-   });
+        var socketID = socket.id;
+        if (curUsers[socketID] == undefined) {
+            return;
+        }
+        console.log('Someone disconnected');
+
+        try {
+            var nameOfSocket = curUsers[socketID].name;
+        } catch (error) {
+            console.log(error);
+        }
+        var i = users.indexOf(nameOfSocket);
+        users.splice(i, 1);
+        io.emit('users', users);
+    });
 
 });
 
