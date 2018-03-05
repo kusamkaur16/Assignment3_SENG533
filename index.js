@@ -18,6 +18,15 @@ var history = [];
 var users = [];
 var newName;
 
+//This function filters out blacklisted text
+var filter = function(msg) {
+    let replaced = msg.replace('<script>', '');
+    replaced = replaced.replace('</script>','');
+    replaced = replaced.replace('<','');
+    replaced = replaced.replace('>','');
+    return replaced;
+}
+
 //This function is used to update the names associated with each message once
 //a name is changed
 var updateHistory = function(oldNick, nickNew) {
@@ -148,19 +157,20 @@ io.on('connection', function(socket) {
         let seconds = (dt.getSeconds() < 10 ? '0' : '') + dt.getSeconds();
         var date = hour + ":" + minutes + ":" + seconds;
         let color = curUsers[socket.id].color
+        let cleared = filter(msg);
 
         //add to chat history
         history.push({
             color: color,
             time: date,
-            message: msg,
+            message: cleared,
             user: curUsers[socket.id].name
         });
         //send to everyone connected
         let returnMsg = {
             color: color,
             time: date,
-            message: msg,
+            message: cleared,
             user: curUsers[socket.id].name
         };
         io.emit('chat message', returnMsg);
@@ -186,7 +196,7 @@ io.on('connection', function(socket) {
     //This is used to update the color for the user
     socket.on('nick color change', function(msg) {
         let socketName = socket.id;
-        let colorNew = msg.replace('/nickcolor ', '');
+        let colorNew = filter(msg.replace('/nickcolor ', ''));
         let returnMesg
         //check if the color is legit
         if (checkColor(colorNew) === 6) {
@@ -203,7 +213,7 @@ io.on('connection', function(socket) {
     socket.on('nick change', function(msg) {
         let socketName = socket.id;
         let oldNick = curUsers[socketName].name;
-        let nickNew = msg.replace('/nick ', '');
+        let nickNew = filter(msg.replace('/nick ', ''));
         let returnMesg;
         //check if the name is legit
         if (nameInUsers(nickNew) === 1) {
