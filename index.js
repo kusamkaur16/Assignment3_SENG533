@@ -226,14 +226,14 @@ io.on('connection', function(socket) {
         io.emit('users', users);
     });
 
-   //  socket.on('disconnect', function() {
-   //    console.log('Got disconnect!');
-   //    var socketID = socket.id;
-   //    var nameOfSocket = curUsers[socketID].name;
-   //    var i = users.indexOf(nameOfSocket);
-   //    users.splice(i, 1);
-   //    io.emit('users', users);
-   // });
+    socket.on('disconnect', function(data) {
+      console.log('Got disconnect!');
+      var socketID = socket.id;
+      var nameOfSocket = curUsers[socketID].name;
+      var i = users.indexOf(nameOfSocket);
+      users.splice(i, 1);
+      io.emit('users', users);
+   });
 
 });
 
